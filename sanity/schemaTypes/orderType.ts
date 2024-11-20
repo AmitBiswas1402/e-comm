@@ -106,8 +106,8 @@ export const orderType = defineType({
       validation: (Rule) => Rule.min(0),
     }),
     defineField({
-      name: "currency",
-      title: "Currency",
+      name: "status",
+      title: "Order Status",
       type: "string",
       options: {
         list: [
@@ -142,5 +142,5 @@ export const orderType = defineType({
         media: BasketIcon,
       };
     },
-  },
+  },  
 });
