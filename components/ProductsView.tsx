@@ -1,4 +1,5 @@
 import { Category, Product } from "@/sanity.types";
+import ProductGrid from "./ProductGrid";
 
 interface ProductViewProps {
   products: Product[];
@@ -15,7 +16,7 @@ export const ProductsView = ({ products }: ProductViewProps) => {
     {/* products */}
     <div className="flex-1">
         <div>
-            {/* <ProductGrid products={products} /> */}
+            <ProductGrid products={products} />
 
             <hr className="w-1/2 sm:s-3/4" />
         </div>

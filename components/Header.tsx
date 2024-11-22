@@ -12,7 +12,7 @@ import {
 } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 
-export const Header = () => {
+const Header = () => {
   const { user } = useUser();
 
   const createClerkPasskey = async () => {
@@ -98,3 +98,5 @@ export const Header = () => {
     </header>
   );
 };
+
+export default Header
