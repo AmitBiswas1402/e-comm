@@ -6,6 +6,6 @@ export const COUPON_CODES = {
     NEW_YEAR : "NEW_YEAR",
     FALL : "FALL",
     CHRISTMAS : "CHRISTMAS",
-}
+} as const
 
 export type CouponCode = keyof typeof COUPON_CODES
