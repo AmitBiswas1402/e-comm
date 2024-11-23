@@ -174,6 +174,7 @@ export type Product = {
 };
 
 export type Category = {
+  find(arg0: (category: any) => boolean): unknown;
   _id: string;
   _type: "category";
   _createdAt: string;
@@ -357,7 +358,70 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
   stock?: number;
 }>;
 
-// Source: ./sanity/lib/products/searchProductByName.ts
+// Source: ./sanity/lib/products/getProductBySlug.ts
+// Variable: PRODUCT_BY_ID_QUERY
+// Query: *[            _type == "product"            && slug.current == $slug        ] | order(name asc) [0]
+export type PRODUCT_BY_ID_QUERYResult = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }>;
+  price?: number;
+  categories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "category";
+  }>;
+  stock?: number;
+} | null;
+
+// Source: ./sanity/lib/products/searchProductsByName.ts
 // Variable: PRODUCT_SEARCH_QUERY
 // Query: *[            _type == "product"            && name match $searchParams        ] | order(name asc)
 export type PRODUCT_SEARCH_QUERYResult = Array<{
@@ -444,6 +508,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "\n        *[\n            _type == 'category'\n        ] | order(name asc)\n    ": ALL_CATEGORIES_QUERYResult;
     "\n        *[\n            _type == 'product'\n        ] | order(name asc)\n    ": ALL_PRODUCTS_QUERYResult;
+    "\n        *[\n            _type == \"product\"\n            && slug.current == $slug\n        ] | order(name asc) [0]\n    ": PRODUCT_BY_ID_QUERYResult;
     "\n        *[\n            _type == \"product\"\n            && name match $searchParams\n        ] | order(name asc)\n    ": PRODUCT_SEARCH_QUERYResult;
     "\n        *[\n            _type == \"sale\"\n            && isActive == true  \n            && couponCode == $couponCode\n        ] | order(validForm desc) [0]\n        ": ACTIVE_SALE_BY_COUPON_QUERYResult;
   }
