@@ -5,7 +5,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@radix-ui/react-popover";
+} from "@/components/ui/popover";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./button";
@@ -75,7 +75,7 @@ export function CategorySelectorComponent({
               <CommandItem
                 key={category._id}
                 value={category.title}
-                onClick={() => {
+                onSelect={() => {
                   setValue(value === category._id ? "" : category._id);
                   router.push(`/categories/${category.slug?.current}`);
                   setOpen(false);
