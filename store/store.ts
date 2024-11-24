@@ -21,24 +21,30 @@ const useBasketStore = create<BasketState>()(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (product) =>
+
+      // Add an item to the basket
+      addItem: (product) => {
         set((state) => {
           const existingItem = state.items.find(
             (item) => item.product._id === product._id
           );
+
           if (existingItem) {
-            return set({
+            return {
               items: state.items.map((item) =>
                 item.product._id === product._id
                   ? { ...item, quantity: item.quantity + 1 }
                   : item
               ),
-            });
+            };
           } else {
             return { items: [...state.items, { product, quantity: 1 }] };
           }
-        }),
-      removeItem: (productId) =>
+        });
+      },
+
+      // Remove an item or decrease its quantity
+      removeItem: (productId) => {
         set((state) => ({
           items: state.items.reduce((acc, item) => {
             if (item.product._id === productId) {
@@ -50,22 +56,32 @@ const useBasketStore = create<BasketState>()(
             }
             return acc;
           }, [] as BasketItem[]),
-        })),
+        }));
+      },
+
+      // Clear the entire basket
       clearBasket: () => set({ items: [] }),
-      getTotalPrice: () => {
-        return get().items.reduce(
+
+      // Get the total price of all items in the basket
+      getTotalPrice: () =>
+        get().items.reduce(
           (total, item) => total + (item.product.price ?? 0) * item.quantity,
           0
-        );
-      },
+        ),
+
+      // Get the quantity of a specific item
       getItemCount: (productId) => {
-        const item = get().items.find(item => item.product._id === productId);
+        const item = get().items.find((item) => item.product._id === productId);
         return item ? item.quantity : 0;
       },
+
+      // Get all grouped items in the basket
       getGroupedItems: () => get().items,
     }),
     {
-      name: "basket-store",
+      name: "basket-store", // Key for localStorage
     }
   )
 );
+
+export default useBasketStore;
