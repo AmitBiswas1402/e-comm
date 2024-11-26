@@ -1,10 +1,11 @@
 "use client";
 
+import { Metadata } from "@/actions/createCheckoutSession";
 import AddToBasketButton from "@/components/AddToBasketButton";
 import Loader from "@/components/Loader";
 import { imageUrl } from "@/lib/imageUrl";
 import useBasketStore from "@/store/store";
-import { useAuth, useUser } from "@clerk/nextjs";
+import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -33,6 +34,32 @@ function BasketPage() {
         <p className="text-gray-600 text-lg">Your Basket is empty.</p>
       </div>
     );
+  }
+
+  const handleCheckout = async() => {
+    if (!isSignedIn) {
+      setIsLoading(true)
+    }
+
+    try {
+      const metadata: Metadata = {
+        orderNumber: crypto.randomUUID(),
+        customerName: user?.fullName ?? "Unknown",
+        customerEmail: user?.emailAddresses[0].emailAddress ?? "Unknown",
+        clerkUserId: user!.id,
+      };
+
+      const checkouturl = await createCheckoutSession(groupedItems, metadata);
+
+      if (checkouturl) {
+        window.location.href = checkouturl;
+      }
+      
+    } catch (error) {
+      console.error(false);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -78,6 +105,45 @@ function BasketPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="w-full lg:w-80 lg:sticky lg:top-4 bg-white p-6 border rounded lg:order-last fixed bottom-0 left-0 lg:left-auto">
+          <h3 className="text-xl font-semibold">Order Summary</h3>
+          <div className="mt-4 space-y-2">
+            <p className="flex justify-between">
+              <span>Items:</span>
+              <span>
+                {groupedItems.reduce((total, item) => total + item.quantity, 0)}
+              </span>
+            </p>
+            <p className="flex justify-between text-2xl font-bold border-t pt-2">
+              <span>Total:</span>
+              <span>
+                ${useBasketStore.getState().getTotalPrice().toFixed(2)}
+              </span>
+            </p>
+          </div>
+
+          {isSignedIn ? (
+              <button
+                onClick={handleCheckout}
+                disabled={isLoading}
+                className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+              >
+                {isLoading ? "Processing..." : "Checkout"}
+              </button>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                  Sign In to Checkout
+                </button>
+              </SignInButton>
+            )
+          }
+        </div>
+
+        <div className="h-64 lg:h-0">
+          
         </div>
       </div>
     </div>
