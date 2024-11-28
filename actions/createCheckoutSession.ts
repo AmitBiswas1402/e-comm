@@ -36,11 +36,13 @@ export async function createCheckoutSession(
       customerId = customers.data[0].id;
     }
 
-    const successUrl = `${`${process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`}` || process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`;
-    const cancelUrl = `${`${process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`}` || process.env.NEXT_PUBLIC_BASE_URL}/basket`;
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? `https://${process.env.VERCEL_URL}`
+      : `${process.env.NEXT_PUBLIC_BASE_URL}`;
 
-    console.log("SUCCESS URL <<<", successUrl);
-    console.log("CANCEL URL <<<", cancelUrl);    
+    const successUrl = `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`;
+
+    const cancelUrl = `${baseUrl}/basket`;
 
     const session = await stripe.checkout.sessions.create({
         customer: customerId,
