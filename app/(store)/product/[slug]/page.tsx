@@ -6,9 +6,17 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 60;
+
 async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
+
+  console.log(
+    crypto.randomUUID().slice(0, 5) + 
+    `>>> Rendered the product page cache for ${slug}`
+  );  
 
   if (!product) {
     return notFound();
