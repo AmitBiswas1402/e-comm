@@ -44,6 +44,9 @@ export async function createCheckoutSession(
 
     const cancelUrl = `${baseUrl}/basket`;
 
+    console.log("Success URL <<<<", successUrl);
+    console.log("Cancel URL <<<", cancelUrl);    
+
     const session = await stripe.checkout.sessions.create({
         customer: customerId,
         customer_creation: customerId ? undefined : "always",
